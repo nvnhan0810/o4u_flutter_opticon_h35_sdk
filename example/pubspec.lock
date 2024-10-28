@@ -157,9 +157,11 @@ packages:
   opticon_h35_sdk:
     dependency: "direct main"
     description:
-      path: ".."
-      relative: true
-    source: path
+      path: "."
+      ref: main
+      resolved-ref: ebf9a9b3c91c71a901220f56058c345cbb3235d4
+      url: "https://github.com/nvnhan0810/o4u_flutter_opticon_h35_sdk.git"
+    source: git
     version: "0.0.1"
   path:
     dependency: transitive

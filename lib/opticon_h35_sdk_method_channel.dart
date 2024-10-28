@@ -40,6 +40,7 @@ class MethodChannelOpticonH35Sdk extends OpticonH35SdkPlatform {
     }
   }
 
+  @override
   Future<bool> startScanning() async {
     try {
       return await methodChannel.invokeMethod('startScanning');
@@ -51,6 +52,7 @@ class MethodChannelOpticonH35Sdk extends OpticonH35SdkPlatform {
     }
   }
 
+  @override
   Future<bool> stopScanning() async {
     try {
       return await methodChannel.invokeMethod('stopScanning');

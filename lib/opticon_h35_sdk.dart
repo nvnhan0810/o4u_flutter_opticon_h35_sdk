@@ -15,9 +15,12 @@ class OpticonH35Sdk {
   // Stream controllers for different events
   static final StreamController<String> _barcodeController =
       StreamController<String>.broadcast();
+  static final StreamController<String> _errorController =
+      StreamController<String>.broadcast();
 
   // Expose streams
   static Stream<String> get barcodeStream => _barcodeController.stream;
+  static Stream<String> get errorStream => _errorController.stream;
 
   static Future<void> initialize() async {
     _eventChannel.setMethodCallHandler(_handleMethodCall);
@@ -40,11 +43,21 @@ class OpticonH35Sdk {
   }
 
   static Future<bool> startScanning() async {
-    return await OpticonH35SdkPlatform.instance.startScanning();
+    try {
+      return await OpticonH35SdkPlatform.instance.startScanning();
+    } catch (e) {
+      _errorController.add(e.toString());
+      return false;
+    }
   }
 
   static Future<bool> stopScanning() async {
-    return await OpticonH35SdkPlatform.instance.stopScanning();
+    try {
+      return await OpticonH35SdkPlatform.instance.stopScanning();
+    } catch (e) {
+      _errorController.add(e.toString());
+      return false;
+    }
   }
 
   static void dispose() {
