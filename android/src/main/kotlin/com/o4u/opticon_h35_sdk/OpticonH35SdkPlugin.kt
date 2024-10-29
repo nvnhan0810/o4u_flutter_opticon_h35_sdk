@@ -12,6 +12,7 @@ import com.opticon.settings.readoption.ReadOption
 import android.os.Bundle
 import android.util.Log
 import android.content.Context
+import com.opticon.settings.softwarescanner.H35;
 
 
 /** OpticonH35SdkPlugin */
@@ -44,23 +45,19 @@ class OpticonH35SdkPlugin: FlutterPlugin, MethodCallHandler, BarcodeEventListene
                 try {
                     scannerManager = ScannerManager.getInstance(context)
 
-                    Log.d(TAG, "Trigger")
                     for (info in scannerManager!!.scannerInfoList) {
-                        Log.d(TAG, info.toString())
-                        Log.d(TAG, info?.type.toString())
                         //ソフトウェアスキャナ(端末内臓スキャナ)を操作したいとき
                         if (info.type == ScannerType.SOFTWARE_SCANNER) {
-                            Log.d(TAG, "Create Scanner")
                             scanner = scannerManager!!.getScanner(info)
                             break
                         }
                     }
 
+                    scanner!!.addBarcodeEventListener(this)
                     scanner?.init()
 
                     result.success(true)
                 } catch (e: Exception) {
-                    Log.d(TAG, "$e")
                     result.error("CONNECTION_ERROR", e.message, null)
                 }
             }
@@ -78,14 +75,12 @@ class OpticonH35SdkPlugin: FlutterPlugin, MethodCallHandler, BarcodeEventListene
             }
             "startScanning" -> {
                 try {
-                    Log.d(TAG, scanner.toString())
                     if (!scanner!!.isConnected) throw Exception("Scanner not connected")
                     
                     scanner!!.startScan()
 
                     result.success(true)
                 } catch (e: Exception) {
-                    Log.d(TAG, "$e")
                     result.error("SCANNING_ERROR", e.message, null)
                 }
             }
@@ -154,7 +149,7 @@ class OpticonH35SdkPlugin: FlutterPlugin, MethodCallHandler, BarcodeEventListene
             settings.softwareScanner.h35.wedge.intentCategory = "com.opticon.decode.category"
             settings.softwareScanner.h35.wedge.intentBarcodeType = "com.opticon.decode.barcode_type"
             settings.softwareScanner.h35.wedge.intentBarcodeData = "com.opticon.decode.barcode_data"
-            settings.softwareScanner.h35.wedge.intentPackageName = "com.example.scannersdksample"
+            settings.softwareScanner.h35.wedge.intentPackageName = "com.o4u.opticon_h35_sdk"
             scanner!!.settings = settings
         }
     }
