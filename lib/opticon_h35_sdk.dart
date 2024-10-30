@@ -62,5 +62,6 @@ class OpticonH35Sdk {
 
   static void dispose() {
     _barcodeController.close();
+    _errorController.close();
   }
 }

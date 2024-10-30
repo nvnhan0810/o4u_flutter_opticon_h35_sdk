@@ -43,16 +43,20 @@ class OpticonH35SdkPlugin: FlutterPlugin, MethodCallHandler, BarcodeEventListene
         when (call.method) {
             "connect" -> {
                 try {
-                    scannerManager = ScannerManager.getInstance(context)
+                   if (scanner == null) {
+                       scannerManager = ScannerManager.getInstance(context)
 
-                    for (info in scannerManager!!.scannerInfoList) {
-                        //ソフトウェアスキャナ(端末内臓スキャナ)を操作したいとき
-                        if (info.type == ScannerType.SOFTWARE_SCANNER) {
-                            scanner = scannerManager!!.getScanner(info)
-                            break
-                        }
-                    }
-
+                       for (info in scannerManager!!.scannerInfoList) {
+                           Log.d(TAG, info.type.toString())
+                           //ソフトウェアスキャナ(端末内臓スキャナ)を操作したいとき
+                           if (info.type == ScannerType.SOFTWARE_SCANNER) {
+                               Log.d(TAG, "Create Scanner")
+                               scanner = scannerManager!!.getScanner(info)
+                               break
+                           }
+                       }
+                   }
+                    Log.d(TAG, "Scanner Add Event Listener")
                     scanner!!.addBarcodeEventListener(this)
                     scanner?.init()
 
@@ -133,7 +137,7 @@ class OpticonH35SdkPlugin: FlutterPlugin, MethodCallHandler, BarcodeEventListene
     override fun onConnect() {
         //スキャナとの接続が開始された際に呼ばれます
         Log.d(TAG, "onConnect")
-        changeIntentSettings()
+//        changeIntentSettings()
     }
 
     override fun onDisconnect() {
@@ -141,18 +145,18 @@ class OpticonH35SdkPlugin: FlutterPlugin, MethodCallHandler, BarcodeEventListene
         Log.d(TAG, "onDisconnect")
     }
 
-    private fun changeIntentSettings() {
-        val settings = scanner!!.settings
-        if (settings != null) {
-            settings.softwareScanner.h35.wedge.intentIsEnable = true
-            settings.softwareScanner.h35.wedge.intentAction = "com.opticon.decode.action"
-            settings.softwareScanner.h35.wedge.intentCategory = "com.opticon.decode.category"
-            settings.softwareScanner.h35.wedge.intentBarcodeType = "com.opticon.decode.barcode_type"
-            settings.softwareScanner.h35.wedge.intentBarcodeData = "com.opticon.decode.barcode_data"
-            settings.softwareScanner.h35.wedge.intentPackageName = "com.o4u.opticon_h35_sdk"
-            scanner!!.settings = settings
-        }
-    }
+//    private fun changeIntentSettings() {
+//        val settings = scanner!!.settings
+//        if (settings != null) {
+//            settings.softwareScanner.h35.wedge.intentIsEnable = true
+//            settings.softwareScanner.h35.wedge.intentAction = "com.opticon.decode.action"
+//            settings.softwareScanner.h35.wedge.intentCategory = "com.opticon.decode.category"
+//            settings.softwareScanner.h35.wedge.intentBarcodeType = "com.opticon.decode.barcode_type"
+//            settings.softwareScanner.h35.wedge.intentBarcodeData = "com.opticon.decode.barcode_data"
+//            settings.softwareScanner.h35.wedge.intentPackageName = "com.o4u.opticon_h35_sdk"
+//            scanner!!.settings = settings
+//        }
+//    }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
